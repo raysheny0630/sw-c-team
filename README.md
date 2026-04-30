@@ -25,12 +25,6 @@ SNS·뉴스 피드를 보다가 앱 전환 없이 **오버레이 방식**으로 
 | 박정우 | 개발자 | 기술 구현 가능성 분석, 핵심 로직 프로토타입 | @sanyomari23 |
 | 주민찬 | QA/보안 | 품질 목표 설정, 인스펙션, 취약점 분석 | @chanibab |
 
-## 마일스톤
-
-- [M1 기획](https://github.com/raysheny0630/sw-c-team/milestone/1)
-- [M2 설계](https://github.com/raysheny0630/sw-c-team/milestone/2)
-- [M3 구현·보고](https://github.com/raysheny0630/sw-c-team/milestone/3)
-
 ## 문서
 
 | 문서 | 설명 |
@@ -38,4 +32,4 @@ SNS·뉴스 피드를 보다가 앱 전환 없이 **오버레이 방식**으로 
 | [M1 기획서](docs/M1-기획서.md) | 프로젝트 개요·팀 구성·요구사항·WBS·FP·AI 활용 계획 전체 |
 | [요구사항 정의서](docs/requirements.md) | FR / NFR 목록 (Issue 관리용) |
 | [WBS 및 일정](docs/wbs.md) | 작업 분해 구조 및 마일스톤 연결표 |
-| [회의록](docs/meetings/) | 날짜별 회의록 |
+
