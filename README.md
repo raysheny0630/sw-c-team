@@ -1,2 +1,41 @@
-# sw-c-team
-TrueFilter: Dankook University Software Introduction Project
+# TrueFilter
+
+> 단국대학교 소프트웨어개론 C조 팀 프로젝트 | 2026년 1학기
+
+## 프로젝트 개요
+
+SNS·뉴스 피드를 보다가 앱 전환 없이 **오버레이 방식**으로 신뢰도·편향도 분석 결과를 즉시 확인할 수 있는 Android/iOS 앱.  
+사용자가 스스로 정보를 판단할 수 있도록 근거(출처 공신력·유사 기사 수·팩트체크 결과)를 함께 제공한다.
+
+## 주요 기능
+
+- SNS 화면 텍스트 실시간 인식
+- 데이터 기반 신뢰도 5단계 척도 계산 (출처 공신력·팩트체크·인용 여부 합산)
+- 유사 기사 리스트 제공 (최대 5건) + 편향도 1문장 요약
+- 오버레이 창 위치(드래그)·투명도(슬라이더) 사용자 직접 조절
+- 오분석 수정 피드백 전송 기능
+
+## 팀 구성
+
+| 이름 | 역할 | 주요 책임 | GitHub |
+|------|------|-----------|--------|
+| 김지우 | PM (팀장) | 일정·마일스톤 관리, 회의 진행, 최종 보고서 통합 | @raysheny0630 |
+| 정주승 | 분석가 | 요구사항 정의, 유스케이스 명세, AI 인터뷰 주도 | @SuperHongSi |
+| 최라혜 | 설계자 | 클래스·순차 다이어그램 작성, 패턴 적용 | @zibizip |
+| 박정우 | 개발자 | 기술 구현 가능성 분석, 핵심 로직 프로토타입 | @sanyomari23 |
+| 주민찬 | QA/보안 | 품질 목표 설정, 인스펙션, 취약점 분석 | @chanibab |
+
+## 마일스톤
+
+- [M1 기획](https://github.com/raysheny0630/sw-c-team/milestone/1)
+- [M2 설계](https://github.com/raysheny0630/sw-c-team/milestone/2)
+- [M3 구현·보고](https://github.com/raysheny0630/sw-c-team/milestone/3)
+
+## 문서
+
+| 문서 | 설명 |
+|------|------|
+| [M1 기획서](docs/M1-기획서.md) | 프로젝트 개요·팀 구성·요구사항·WBS·FP·AI 활용 계획 전체 |
+| [요구사항 정의서](docs/requirements.md) | FR / NFR 목록 (Issue 관리용) |
+| [WBS 및 일정](docs/wbs.md) | 작업 분해 구조 및 마일스톤 연결표 |
+| [회의록](docs/meetings/) | 날짜별 회의록 |
