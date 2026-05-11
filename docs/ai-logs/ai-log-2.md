@@ -1,252 +1,187 @@
-# M2 AI 활용 로그 — 클래스 다이어그램
+# M2 AI 활용 로그 — 유스케이스 다이어그램
 
-> **대상 산출물**: `docs/design/class_diagram.md`
+> **대상 산출물**: `docs/design/usecase_diagram.md`
 > **작성자**: 분석가
 > **대상 기간**: 9주차 (M2 설계 착수)
 > **사용 도구**: Claude (Anthropic)
 
 ---
 
-## 건별 로그 #1 — 클래스 다이어그램 초안 생성
+## 건별 로그 #1 — 유스케이스 다이어그램 초안 생성
 
 ### 프롬프트
 
 ```
 (파일 첨부: PHASE3-5_UML_작성가이드.pdf)
-(파일 첨부: docs/design/usecase_diagram.md)
 (파일 첨부: _DKU_C조_PHASE3-3_요구사항정의서.pdf)
 
-첨부한 UML 작성 가이드 §3 형식에 맞춰서
-유스케이스 다이어그램을 바탕으로 클래스 다이어그램을 만들어줘.
-Mermaid classDiagram 형식으로 작성하고
-각 클래스에 속성과 메서드를 최소 2개 이상,
-접근 제어자(+/-/#)도 포함해줘.
-클래스 간 관계는 연관·합성·집합·의존을 구분해서 표현해줘.
+첨부한 UML 작성 가이드 §2 형식에 맞춰서
+요구사항 정의서의 FR 목록을 유스케이스 다이어그램으로 만들어줘.
+Mermaid flowchart 형식으로 작성하고
+액터, 시스템 경계, include/extend 관계 포함해줘.
 ```
 
 ---
 
 ### AI 응답 요약
 
-Claude가 가이드 §3 형식을 잘 준수하여 접근 제어자, 속성·메서드 2개 이상, 합성·집합·의존 관계를 구분한 classDiagram을 생성하였다. 전체 구조는 사용 가능한 수준이었으나 일부 속성명이 팀이 의도한 것과 달랐고, 관계 설명이 없어서 왜 그 관계를 선택했는지 추적이 안 됐다. `Article` 클래스도 누락되어 있었다.
+Claude가 가이드 §2 형식에 맞춰 `flowchart LR`, `subgraph` 시스템 경계, `<<include>>`/`<<extend>>` 표기를 포함한 코드를 생성하였다. FR 5개가 유스케이스로 변환되었고 FactCheck API 액터도 포함되었다.
 
 ---
 
 ### AI 생성 원본
 
 ```mermaid
-classDiagram
-    class User {
-        -userId : String
-        -email : String
-        +activateOverlay() void
-        +sendFeedback(id, comment) void
-    }
+flowchart LR
+    User(["👤 사용자"])
+    Ext(["🌐 FactCheck API"])
 
-    class OverlayService {
-        -isActive : Boolean
-        -position : Point
-        +start() void
-        +stop() void
-        +onCapture(bitmap) void
-        +showResult(result) void
-    }
+    subgraph SYS ["TrueFilter"]
+        UC01(["오버레이 켜기"])
+        UC02(["신뢰도 보기"])
+        UC03(["편향도 보기"])
+        UC04(["화면 설정하기"])
+        UC05(["오류 신고하기"])
+        UCS1(["텍스트 읽기"])
+        UCS2(["API 호출하기"])
+        UCS3(["기사 더 보기"])
+    end
 
-    class TextRecognizer {
-        -threshold : int
-        -language : String
-        +recognize(bitmap) String
-        +isNewsText(text) Boolean
-    }
+    User --- UC01
+    User --- UC02
+    User --- UC03
+    User --- UC04
+    User --- UC05
 
-    class TrustAnalyzer {
-        -weights : Map
-        -apiClient : Object
-        +analyze(text, fact) AnalysisResult
-        +calculateScore(s, f, c) int
-    }
+    UC02 -.->|"<<include>>"| UCS1
+    UC02 -.->|"<<include>>"| UCS2
+    UC03 -.->|"<<include>>"| UC02
+    UC03 -.->|"<<extend>>"| UCS3
 
-    class BiasAnalyzer {
-        -limit : int
-        -endpoint : String
-        +analyze(text) String
-        +fetchSimilarArticles(text) List
-    }
-
-    class AnalysisResult {
-        -id : String
-        -score : int
-        -summary : String
-        -createdAt : DateTime
-        +getTrustLevel() String
-        +isExpired() Boolean
-    }
-
-    class UserSettings {
-        -x : int
-        -y : int
-        -alpha : Float
-        +update(x, y, alpha) void
-        +reset() void
-    }
-
-    class ArticleCache {
-        -ttl : int
-        -capacity : int
-        +get(hash) AnalysisResult
-        +put(hash, result) void
-    }
-
-    class FeedbackRepository {
-        -queue : List
-        -url : String
-        +save(id, comment) void
-        +flush() void
-    }
-
-    class FactCheckAPI {
-        <<interface>>
-        +query(text) FactCheckResult
-        +getStatus() String
-    }
-
-    User --> OverlayService
-    User o-- UserSettings
-    OverlayService *-- TextRecognizer
-    OverlayService *-- TrustAnalyzer
-    OverlayService *-- BiasAnalyzer
-    OverlayService o-- ArticleCache
-    OverlayService o-- FeedbackRepository
-    TrustAnalyzer ..> FactCheckAPI
-    BiasAnalyzer ..> FactCheckAPI
-    TrustAnalyzer ..> AnalysisResult
-    BiasAnalyzer ..> AnalysisResult
-    ArticleCache o-- AnalysisResult
+    UCS2 --- Ext
+    UCS3 --- Ext
 ```
 
 ---
 
-### 비판적 검토
+### 팀이 태클 건 내용
 
-전체 구조와 관계 표기는 가이드를 잘 따랐다. 수정이 필요했던 부분은 형식 오류가 아니라 팀의 표현 방식과 다르거나 정보가 부족했던 부분이다.
+AI가 생성한 초안을 팀원들이 함께 검토하면서 나온 의견이다.
 
-| # | 검토 내용 | 판단 |
-|---|----------|------|
-| 1 | `flowchart`, 접근 제어자, 속성·메서드 최소 2개, 관계 구분 등 가이드 형식 준수 | 적절 |
-| 2 | `FactCheckAPI` interface 스테레오타입 포함 | 적절 |
-| 3 | 합성·집합·의존 관계 올바르게 구분 | 적절 |
-| 4 | 일부 속성명이 너무 축약됨 (`alpha` → `opacity`, `id` → `analysisId`, `score` → `trustScore`) | 수정 필요 |
-| 5 | `TrustAnalyzer`의 `weights : Map`, `apiClient : Object` — 타입이 너무 추상적 | 수정 필요 |
-| 6 | `Article` 클래스 누락 — `AnalysisResult`가 유사 기사를 포함하는 구조가 표현 안 됨 | 수정 필요 |
-| 7 | `User`에 `adjustOverlay()` 메서드 없음 — FR-03(오버레이 조절)이 User 쪽에서도 호출됨 | 수정 필요 |
-| 8 | 클래스 도출 근거표(유스케이스 명사 → 클래스 매핑)가 없어 추적이 안 됨 | 수정 필요 |
+> **분석가**: "신뢰도 보기"가 좀 어색하지 않아? 요구사항 정의서에서는 "신뢰도 확인"이라고 썼는데 통일하는 게 낫지 않을까
+
+> **PM**: 맞아, 우리가 기획서에서 쓴 표현이랑 달라서 나중에 헷갈릴 것 같음. 그리고 "오류 신고하기"도 우리 기능이랑 좀 다른 느낌인데, 우리는 틀린 분석 결과에 피드백 보내는 거잖아
+
+> **설계자**: "TrueFilter"만 적힌 것도 좀 짧은 것 같긴 한데... 공식 문서라면 "TrueFilter 시스템"이라고 써야 할 것 같아
+
+> **분석가**: "API 호출하기"도 너무 기술적인 표현 같음. 사용자 입장에서 보이는 기능 이름이 아니라 구현 방식처럼 들려
 
 ---
 
-### 수정 내용
+### AI 활용 교차검증
 
-**수정 1** — 속성명을 요구사항 정의서·기획서 표현에 맞게 통일
+팀 의견을 반영하여 수정 방향을 잡은 뒤, AI에게 이름 변경이 가이드 기준에 맞는지 검증을 요청하였다.
 
-줄임말 없이 의도가 명확하게 읽히는 이름으로 교체하였다.
+#### 교차검증 프롬프트
 
-| AI 원본 | 수정 후 | 이유 |
-|---------|---------|------|
-| `-alpha : Float` | `-opacity : Float` | 요구사항 정의서 FR-03 표현과 일치 |
-| `-id : String` | `-analysisId : String` | `userId`와 구분, 혼동 방지 |
-| `-score : int` | `-trustScore : int` | `biasScore`와 구분 목적 |
-| `-createdAt : DateTime` | `-timestamp : DateTime` | 팀 내 변수명 컨벤션 통일 |
+```
+(파일 첨부: PHASE3-5_UML_작성가이드.pdf)
 
-**수정 2** — `TrustAnalyzer` 속성 타입 구체화
+유스케이스 이름을 아래처럼 바꾸려고 하는데
+가이드의 "동사 + 목적어" 형식에 맞는지 확인해줘.
 
-`weights : Map`은 어떤 가중치인지 알 수 없어서 가중치 항목별로 분리하였다. `apiClient : Object`는 의존 관계로 표현하면 충분해서 속성에서 제거하였다.
+- 오버레이 켜기 → 오버레이 활성화하기
+- 신뢰도 보기 → 신뢰도 확인하기
+- 편향도 보기 → 편향도 분석 확인하기
+- 화면 설정하기 → 오버레이 설정하기
+- 오류 신고하기 → 피드백 전송하기
+- 텍스트 읽기 → 텍스트 인식하기
+- API 호출하기 → 팩트체크 API 조회하기
+- 기사 더 보기 → 유사 기사 조회하기
+```
 
-| AI 원본 | 수정 후 |
-|---------|---------|
-| `-weights : Map` | `-wSource : Float` / `-wFactCheck : Float` |
-| `-apiClient : Object` | 제거 (FactCheckAPI와의 의존 관계로 표현) |
+#### AI 교차검증 응답 요약
 
-**수정 3** — `Article` 클래스 추가
-
-`BiasAnalyzer.fetchSimilarArticles()`의 반환 타입이 `List`인데 List 안의 요소가 무엇인지 표현이 없었다. FR-04에서 유사 기사 최대 5건을 제공하므로 `Article` 클래스를 추가하고 `AnalysisResult o-- Article` 집합 관계로 연결하였다.
-
-**수정 4** — `User`에 `adjustOverlay()` 메서드 추가
-
-FR-03이 "사용자는 오버레이 창의 위치와 투명도를 조절할 수 있어야 한다"이므로 User 클래스에서 해당 동작이 시작되어야 한다.
-
-**수정 5** — 클래스 도출 근거표 직접 작성
-
-AI가 코드만 생성하고 왜 이 클래스들을 도출했는지는 설명하지 않았다. 팀이 유스케이스 명사 분석 방식(강의 Chap-8 §3 객체 식별)에 따라 직접 매핑 표를 작성하여 추가하였다.
+변경된 이름들이 모두 "동사 + 목적어" 형식을 충족하며, 원래 이름보다 기능의 의미가 더 명확하게 전달된다고 확인하였다. 특히 `API 호출하기` → `팩트체크 API 조회하기`는 구현 관점 표현에서 사용자·기능 관점 표현으로 개선된 점을 긍정적으로 평가하였다. 수정 방향 모두 가이드 기준에 적합하다고 판단하였다.
 
 ---
 
 ### 최종 반영 결과
 
-`docs/design/class_diagram.md`의 `## 클래스 다이어그램` 섹션에 반영 완료.  
-관계 구조와 전체 클래스 목록은 AI 원본을 기반으로 하였고, **속성명 4개 교체**, **속성 타입 구체화 2건**, **`Article` 클래스 추가**, **`User` 메서드 1개 추가**, **클래스 도출 근거표 직접 작성**을 팀이 수정·보완하였다.
+`docs/design/usecase_diagram.md`에 반영 완료.  
+유스케이스 이름 8개, 시스템 경계명 1개 수정. 구조와 관계는 AI 원본 유지.
 
 ---
 
-## 건별 로그 #2 — 관계 기수성 및 근거 보완
+## 건별 로그 #2 — 유스케이스 설명서 초안 생성
 
 ### 프롬프트
 
 ```
 (파일 첨부: PHASE3-5_UML_작성가이드.pdf)
+(파일 첨부: _DKU_C조_PHASE3-3_요구사항정의서.pdf)
 
-아래 클래스 다이어그램에서 주요 관계의 기수성을 추가하고
-왜 합성인지 집합인지 근거도 함께 설명해줘.
-FR-04에 따르면 유사 기사는 최대 5건이야.
-
-(클래스 다이어그램 코드 붙여넣기)
+UC-02 "신뢰도 확인하기"의 유스케이스 설명서를 작성해줘.
+가이드 §2-2 형식(식별부, 정상 시나리오, 예외 처리)으로 써줘.
+요구사항 정의서의 NFR-01(2초 이내)과 FR-02(5단계 계산 방식)도 반영해줘.
 ```
 
 ---
 
 ### AI 응답 요약
 
-Claude가 각 관계의 기수성과 선택 근거를 표 형식으로 정리하여 제시하였다. 내용은 대체로 맞았으나 `AnalysisResult → Article`의 기수성을 `0..*`으로 작성하여 FR-04의 최대 5건 조건이 반영되지 않았고, 집합과 합성의 근거 설명이 "독립 존재 여부"라는 말 한마디로 짧게 끝났다.
+식별부, 정상 시나리오 4단계, 예외 처리 3개 항목을 포함한 설명서를 생성하였다. 전반적인 구조는 가이드 형식에 맞았으나 예외 처리 서술이 결과만 적혀 있고 어떻게 처리되는지 동작이 빠져 있었다.
 
 ---
 
-### AI 생성 원본 (기수성 표 부분)
+### AI 생성 원본 (예외 처리 부분)
 
-| 관계 | 기수성 | 근거 |
-|------|--------|------|
-| `OverlayService` → `TextRecognizer` | 1 : 1 (합성) | 독립 존재 불가 |
-| `AnalysisResult` → `Article` | 1 : 0..* (집합) | 독립 존재 가능 |
-| `User` → `UserSettings` | 1 : 1 (집합) | 독립 존재 가능 |
-
----
-
-### 비판적 검토
-
-| # | 검토 내용 | 판단 |
-|---|----------|------|
-| 1 | `0..*` — FR-04 최대 5건 조건 미반영 | 수정 필요 |
-| 2 | 근거 설명이 "독립 존재 불가/가능" 한 마디로만 끝남 — 왜 그런지 이유가 없음 | 수정 필요 |
+| 식별자 | 예외 상황 | 처리 |
+|--------|-----------|------|
+| E-1 | API 응답 없음 | 오류 메시지 표시 |
+| E-2 | 텍스트 인식 실패 | 오버레이 미표시 |
+| E-3 | 네트워크 오류 | 재시도 안내 |
 
 ---
 
-### 수정 내용
+### 비판적 검증
 
-**수정 1** — `0..*` → `0..5` (FR-04 기준 반영)
+"오류 메시지 표시"는 너무 두루뭉술하다, 스트 인식 실패가 정확히 어떤 상황인지도 모르겠다, API 오류 났을 때 그냥 안 보여주는 건 아니고 부분적으로 계산해서 보여주는 방식으로 하기로 했으므로 수정이 필요.
 
-**수정 2** — 근거 설명에 구체적 이유 추가
+---
 
-| AI 원본 근거 | 수정 후 근거 |
-|-------------|-------------|
-| 독립 존재 불가 | 서비스 종료 시 인식 모듈도 소멸; 다른 서비스에서 재사용 없음 |
-| 독립 존재 가능 | 캐시는 서비스 없이도 TTL 동안 데이터 유지; 다른 분석에서 재사용 가능 |
-| 독립 존재 가능 | 사용자 삭제 후에도 설정 이력 보존이 필요할 수 있음 |
+### AI 활용 교차검증
+
+팀 의견을 바탕으로 예외 처리 내용을 구체화한 뒤, 정상 시나리오 흐름과 충돌이 없는지 AI에게 검증을 요청하였다.
+
+#### 교차검증 프롬프트
+
+```
+(파일 첨부: _DKU_C조_PHASE3-3_요구사항정의서.pdf)
+
+아래 예외 처리 내용이 정상 시나리오 흐름과 충돌하지 않는지 확인해줘.
+그리고 빠진 케이스가 있으면 말해줘.
+
+수정한 예외 처리:
+- API 응답 2초 초과 → 타임아웃 처리 후 "분석 중" 표시, 결과 도착 시 업데이트
+- 인식 텍스트 30자 미만 → 오버레이 미표시
+- API HTTP 5xx 오류 → 출처·인용 점수만으로 부분 계산 후 "팩트체크 미포함" 표시
+```
+
+#### AI 교차검증 응답 요약
+
+정상 시나리오와 충돌 없음을 확인하였다. 추가로 캐시에 저장된 만료 결과를 다시 표시하는 케이스(TTL 초과 후 재분석 시점)가 예외 처리에 빠져 있다고 지적하였다. 팀 논의 결과 해당 케이스는 M3 구현 단계에서 다루기로 하고 이번 설명서에는 포함하지 않기로 결정하였다.
 
 ---
 
 ### 최종 반영 결과
 
-`docs/design/class_diagram.md`의 `## 관계 기수성 및 선택 근거` 표에 반영 완료.  
-**기수성 `0..*` → `0..5` 수정 1건**, **근거 설명 구체화 3건**을 팀이 수정하였다.
-
+`docs/design/usecase_diagram.md`의 유스케이스 설명서 섹션에 반영 완료.  
+예외 처리 서술 3개 구체화, 정상 시나리오 Step 5에 `← NFR-01: 2초 이내` 명시.
 
 ---
+
+
+
 
 *작성일: 2026-05-11 | 작성자: 분석가*
