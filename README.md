@@ -33,6 +33,7 @@ SNS·뉴스 피드를 보다가 앱 전환 없이 **오버레이 방식**으로 
 | [요구사항 정의서](docs/requirements.md) | FR / NFR 목록 (Issue 관리용) |
 | [WBS 및 일정](docs/wbs.md) | 작업 분해 구조 및 마일스톤 연결표 |
 | [유스케이스 다이어그램](docs/usecase_diagram.md) | 유스케이스 명세 |
+| [클래스 다이어그램](docs/class_diagram.md) | 클래스 다이어그램 |
 
 ## 마일스톤
 
