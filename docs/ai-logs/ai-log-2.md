@@ -2,7 +2,7 @@
 
 > **대상 산출물**: `docs/design/usecase_diagram.md`
 > **작성자**: 분석가
-> **대상 기간**: 9주차 (M2 설계 착수)
+> **대상 기간**: 11주차 (M2 설계 착수)
 > **사용 도구**: Claude (Anthropic)
 
 ---
