@@ -176,7 +176,7 @@ PD 계층(`analysis` 패키지)의 클래스를 기준으로 데이터베이스 
 > **제외 필드**: `timestamp`는 `created_at`으로 대체. `isExpired()`는 메서드이므로 제외.  
 > **설계상 추가 컬럼 근거**:  
 > - `source_text_hash`: `AnalysisResult` 클래스 멤버 변수에는 없으나, `ArticleCache.get(hash)` / `put(hash, result)` 메서드가 해시 키로 캐시를 조회·저장하는 구조이므로 해시값을 결과와 함께 영속화해야 캐시 재구성 및 중복 분석 방지가 가능하다. `ArticleCache`(DM Layer) 내부에서만 관리할 경우 캐시 초기화 후 재조회가 불가능하므로 `analysis_result` 테이블에 보관한다.  
-> - `trust_level`: `AnalysisResult.getTrustLevel()` 메서드에서 `trust_score`를 기반으로 파생되는 값이나, 조회 성능 및 결과 재현 일관성을 위해 컬럼으로 저장한다 (회의록 2026-06-01 결정 사항 반영).
+> - `trust_level`: `AnalysisResult.getTrustLevel()` 메서드에서 `trust_score`를 기반으로 파생되는 값이나, 조회 성능 및 결과 재현 일관성을 위해 컬럼으로 저장한다 .
 
 ---
 
