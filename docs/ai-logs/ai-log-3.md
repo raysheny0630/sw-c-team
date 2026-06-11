@@ -1,6 +1,6 @@
 # M2 AI 활용 로그 — 클래스 다이어그램
 
-**대상 산출물**: `docs/design/class_diagram.md`  
+**대상 산출물**: `docs/class_diagram.md`  
 **작성자**: 설계자  
 **대상 기간**: 10주차 (M2 설계 착수)  
 **사용 도구**: Claude (Anthropic)
