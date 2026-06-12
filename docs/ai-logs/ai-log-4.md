@@ -303,9 +303,13 @@ AI가 `gemini-1.5-flash` → `gemini-1.5-flash-latest` → `gemini-1.0-pro-lates
 
 ### 최종 반영 결과
 
-`prototype/main.py`의 `AIAnalyzer` 클래스에 반영 완료.  
+`TrueFilter/main.py`의 `AIAnalyzer` 클래스에 반영 완료.  
 `google-generativeai` 라이브러리를 `requests` 직접 호출 방식으로 **전면 교체**, **HTTP 오류 코드 UI 출력 로직 추가**, **Tesseract 경로(`C:\Users\Ditto\AppData\Local\Programs\Tesseract-OCR\tesseract.exe`) 하드코딩 반영**을 팀이 직접 수정·보완하였다.
 
 ---
 
 *작성일: 2026-05-19 | 작성자: 개발자, PM*
+
+---
+
+> *정정 이력 (2026-06-12, 6/11 회의 결정)*: 최종 반영 위치 경로 오기 `prototype/main.py` → `TrueFilter/main.py` 정정.
